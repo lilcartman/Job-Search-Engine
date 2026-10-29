@@ -1,0 +1,6 @@
+.env
+venv/
+__pycache__/
+*.pyc
+mnt/
+.last_sync_success
