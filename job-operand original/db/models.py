@@ -20,7 +20,7 @@ from sqlalchemy import (
     Index,
     func,
 )
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy import relationship, declarative_base
 
 Base = declarative_base()
 

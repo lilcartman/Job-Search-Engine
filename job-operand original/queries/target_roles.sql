@@ -16,8 +16,9 @@ DROP VIEW IF EXISTS target_role_jobs;
 CREATE VIEW target_role_jobs AS
 SELECT
     j.id,
+    j.company_id,
     j.title,
-    c.name        AS company_name,
+    c.name AS company_name,
     j.department,
     j.country,
     j.city,
@@ -27,8 +28,9 @@ SELECT
     j.apply_url,
     j.posted_at,
     j.status
-FROM jobs j
-JOIN companies c ON c.id = j.company_id
+FROM jobs AS j
+JOIN companies AS c
+    ON c.id = j.company_id
 WHERE j.status IS DISTINCT FROM 'closed'
   AND (
         j.title ILIKE '%GTM engineer%'
@@ -41,20 +43,49 @@ WHERE j.status IS DISTINCT FROM 'closed'
   );
 
 -- 2. Newest matches first — this is what you'd check daily.
-SELECT *
+SELECT
+    id,
+    company_id,
+    title,
+    company_name,
+    department,
+    country,
+    city,
+    remote,
+    employment_type,
+    workplace_type,
+    apply_url,
+    posted_at,
+    status
 FROM target_role_jobs
 ORDER BY posted_at DESC NULLS LAST
 LIMIT 50;
 
 -- 3. Count of open target-role jobs by company, most active hirers first.
-SELECT company_name, COUNT(*) AS open_roles
+SELECT
+    company_id,
+    company_name,
+    COUNT(*) AS open_roles
 FROM target_role_jobs
-GROUP BY company_name
+GROUP BY company_id, company_name
 ORDER BY open_roles DESC
 LIMIT 25;
 
 -- 4. Remote-only matches.
-SELECT *
+SELECT
+    id,
+    company_id,
+    title,
+    company_name,
+    department,
+    country,
+    city,
+    remote,
+    employment_type,
+    workplace_type,
+    apply_url,
+    posted_at,
+    status
 FROM target_role_jobs
 WHERE remote IS TRUE
 ORDER BY posted_at DESC NULLS LAST;
